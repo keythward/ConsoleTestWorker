@@ -16,7 +16,7 @@ namespace ConsoleTestWorker
         Offaly,Dublin,Meath,Westmeath,Louth,Monaghan,Cavan,Longford,Donegal,Leitrim,Sligo,Roscommon,Mayo,Galway,Clare};
         public static void Main()
         {
-            string url = "https://www.propertypriceregister.ie/website/npsra/ppr/npsra-ppr.nsf/downloads/ppr-2010.csv/$file/ppr-2010.csv";
+            string url = "https://www.propertypriceregister.ie/website/npsra/ppr/npsra-ppr.nsf/downloads/ppr-2015.csv/$file/ppr-2015.csv";
 
             string proceed = DownloadFile(url);
             if (proceed != null)
@@ -147,7 +147,8 @@ namespace ConsoleTestWorker
                 altered.Add(ar);
             }
             // send to method to divide up list and send to database
-            DivideAndSave(altered);
+            //DivideAndSave(altered);                                         // CREATE DOCUMENTS
+            DivideAndSave2(altered);                                        // UPDATE DOCUMENTS
         }
         // sort address and postal code
         public static AddressHolder SortAddress(string address, string county, string pc)
@@ -381,7 +382,7 @@ namespace ConsoleTestWorker
                 { "rathcoole", "county dublin"},
                 { "saggart", "county dublin"},
                 { "shankill", "county dublin"}};
-        // divide list up into counties and add to database
+        // divide list up into counties and add to database                 //CREATE
         public static void DivideAndSave(List<AlteredRecord> list)
         {
             List<AlteredRecord> templist = new List<AlteredRecord>();
@@ -474,29 +475,29 @@ namespace ConsoleTestWorker
                     DatabaseConnect dbj = new DatabaseConnect(co.ToString(), templist_j);
                     DatabaseConnect dbk = new DatabaseConnect(co.ToString(), templist_k);
                     DatabaseConnect dbl = new DatabaseConnect(co.ToString(), templist_l);
-                    string year = "2010_1";
+                    string year = "2015_1";
                     dba.CreateDocument(year);
-                    year = "2010_2";
+                    year = "2015_2";
                     dbb.CreateDocument(year);
-                    year = "2010_3";
+                    year = "2015_3";
                     dbc.CreateDocument(year);
-                    year = "2010_4";
+                    year = "2015_4";
                     dbd.CreateDocument(year);
-                    year = "2010_5";
+                    year = "2015_5";
                     dbe.CreateDocument(year);
-                    year = "2010_6";
+                    year = "2015_6";
                     dbf.CreateDocument(year);
-                    year = "2010_7";
+                    year = "2015_7";
                     dbg.CreateDocument(year);
-                    year = "2010_8";
+                    year = "2015_8";
                     dbh.CreateDocument(year);
-                    year = "2010_9";
+                    year = "2015_9";
                     dbi.CreateDocument(year);
-                    year = "2010_10";
+                    year = "2015_10";
                     dbj.CreateDocument(year);
-                    year = "2010_11";
+                    year = "2015_11";
                     dbk.CreateDocument(year);
-                    year = "2010_12";
+                    year = "2015_12";
                     dbl.CreateDocument(year);
                     templist.Clear();
                     
@@ -525,10 +526,167 @@ namespace ConsoleTestWorker
                     // save templist in proper document
                     DatabaseConnect db = new DatabaseConnect(co.ToString(), templist1);
                     DatabaseConnect db2 = new DatabaseConnect(co.ToString(), templist2);
-                    string year = "2010_A";
+                    string year = "2015_A";
                     db.CreateDocument(year);
-                    year = "2010_B";
+                    year = "2015_B";
                     db2.CreateDocument(year);
+                    // empty templists
+                    templist.Clear();
+                    templist1.Clear();
+                    templist2.Clear();
+                }
+            }
+
+        }
+
+        // divide list up into counties and add to database                 //UPDATE
+        public static void DivideAndSave2(List<AlteredRecord> list)
+        {
+            List<AlteredRecord> templist = new List<AlteredRecord>();
+            List<AlteredRecord> templist1 = new List<AlteredRecord>();
+            List<AlteredRecord> templist2 = new List<AlteredRecord>();
+            for (County co = County.Kerry; co <= County.Clare; co++)
+            {
+                if (co == County.Dublin) // Dublin is too large and needs to be uploaded to database in months
+                {
+                    foreach (AlteredRecord ar in list)
+                    {
+                        if (ar.County.Equals(co.ToString()))
+                        {
+                            templist.Add(ar);
+                        }
+                    }
+                    List<AlteredRecord> templist_a = new List<AlteredRecord>();
+                    List<AlteredRecord> templist_b = new List<AlteredRecord>();
+                    List<AlteredRecord> templist_c = new List<AlteredRecord>();
+                    List<AlteredRecord> templist_d = new List<AlteredRecord>();
+                    List<AlteredRecord> templist_e = new List<AlteredRecord>();
+                    List<AlteredRecord> templist_f = new List<AlteredRecord>();
+                    List<AlteredRecord> templist_g = new List<AlteredRecord>();
+                    List<AlteredRecord> templist_h = new List<AlteredRecord>();
+                    List<AlteredRecord> templist_i = new List<AlteredRecord>();
+                    List<AlteredRecord> templist_j = new List<AlteredRecord>();
+                    List<AlteredRecord> templist_k = new List<AlteredRecord>();
+                    List<AlteredRecord> templist_l = new List<AlteredRecord>();
+                    foreach (AlteredRecord ar in templist) // divide templist up into months
+                    {
+                        if (ar.SoldOn.Month == 1)
+                        {
+                            templist_a.Add(ar);
+                        }
+                        else if (ar.SoldOn.Month == 2)
+                        {
+                            templist_b.Add(ar);
+                        }
+                        else if (ar.SoldOn.Month == 3)
+                        {
+                            templist_c.Add(ar);
+                        }
+                        else if (ar.SoldOn.Month == 4)
+                        {
+                            templist_d.Add(ar);
+                        }
+                        else if (ar.SoldOn.Month == 5)
+                        {
+                            templist_e.Add(ar);
+                        }
+                        else if (ar.SoldOn.Month == 6)
+                        {
+                            templist_f.Add(ar);
+                        }
+                        else if (ar.SoldOn.Month == 7)
+                        {
+                            templist_g.Add(ar);
+                        }
+                        else if (ar.SoldOn.Month == 8)
+                        {
+                            templist_h.Add(ar);
+                        }
+                        else if (ar.SoldOn.Month == 9)
+                        {
+                            templist_i.Add(ar);
+                        }
+                        else if (ar.SoldOn.Month == 10)
+                        {
+                            templist_j.Add(ar);
+                        }
+                        else if (ar.SoldOn.Month == 11)
+                        {
+                            templist_k.Add(ar);
+                        }
+                        else
+                        {
+                            templist_l.Add(ar);
+                        }
+                    }
+                    // save templist in proper document
+                    DatabaseConnect dba = new DatabaseConnect(co.ToString(), templist_a);
+                    DatabaseConnect dbb = new DatabaseConnect(co.ToString(), templist_b);
+                    DatabaseConnect dbc = new DatabaseConnect(co.ToString(), templist_c);
+                    DatabaseConnect dbd = new DatabaseConnect(co.ToString(), templist_d);
+                    DatabaseConnect dbe = new DatabaseConnect(co.ToString(), templist_e);
+                    DatabaseConnect dbf = new DatabaseConnect(co.ToString(), templist_f);
+                    DatabaseConnect dbg = new DatabaseConnect(co.ToString(), templist_g);
+                    DatabaseConnect dbh = new DatabaseConnect(co.ToString(), templist_h);
+                    DatabaseConnect dbi = new DatabaseConnect(co.ToString(), templist_i);
+                    DatabaseConnect dbj = new DatabaseConnect(co.ToString(), templist_j);
+                    DatabaseConnect dbk = new DatabaseConnect(co.ToString(), templist_k);
+                    DatabaseConnect dbl = new DatabaseConnect(co.ToString(), templist_l);
+                    string year = "2014_1";
+                    //dba.CreateDocument(year);
+                    year = "2014_2";
+                    //dbb.CreateDocument(year);
+                    year = "2014_3";
+                    //dbc.CreateDocument(year);
+                    year = "2014_4";
+                    //dbd.CreateDocument(year);
+                    year = "2014_5";
+                    //dbe.CreateDocument(year);
+                    year = "2014_6";
+                    //dbf.CreateDocument(year);
+                    year = "2014_7";
+                    //dbg.CreateDocument(year);
+                    year = "2014_8";
+                    //dbh.CreateDocument(year);
+                    year = "2014_9";
+                    //dbi.CreateDocument(year);
+                    year = "2014_10";
+                    //dbj.CreateDocument(year);
+                    year = "2015_11";
+                    dbk.ModifyDocument(year);
+                    year = "2014_12";
+                    //dbl.CreateDocument(year);
+                    templist.Clear();
+
+                }
+                else // rest of ireland
+                {
+                    foreach (AlteredRecord ar in list)
+                    {
+                        if (ar.County.Equals(co.ToString()))
+                        {
+                            templist.Add(ar);
+                        }
+                    }
+                    foreach (AlteredRecord ar in templist) // divide in 2
+                    {
+                        if (ar.SoldOn.Month == 1 || ar.SoldOn.Month == 2 || ar.SoldOn.Month == 3 || ar.SoldOn.Month == 4 ||
+                            ar.SoldOn.Month == 5 || ar.SoldOn.Month == 6)
+                        {
+                            templist1.Add(ar);
+                        }
+                        else
+                        {
+                            templist2.Add(ar);
+                        }
+                    }
+                    // save templist in proper document
+                    DatabaseConnect db = new DatabaseConnect(co.ToString(), templist1);
+                    DatabaseConnect db2 = new DatabaseConnect(co.ToString(), templist2);
+                    string year = "2014_A";
+                    //db.CreateDocument(year);
+                    year = "2014_B";
+                    //db2.CreateDocument(year);
                     //db.ModifyDocument(co.ToString());
                     // empty templists
                     templist.Clear();

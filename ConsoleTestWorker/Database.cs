@@ -106,10 +106,13 @@ namespace ConsoleTestWorker
         // read a document, modify it, call update method on modified document
         public async void ModifyDocument(string docitem)
         {
+            string comp = document.id + docitem;
+            Console.WriteLine("modifying: " + comp);
             Database database = GetDatabase(DatabaseId).Result;
             DocumentCollection collection = GetCollection(database, CollectionId).Result;
-            DBRecord docrecord= (DBRecord) client.CreateDocumentQuery(collection.DocumentsLink).Where(x => x.Id == docitem).AsEnumerable().FirstOrDefault();
-            foreach(ListObject lo in document.records)
+            DBRecord docrecord= (DBRecord) client.CreateDocumentQuery(collection.DocumentsLink).Where(x => x.Id == comp).AsEnumerable().FirstOrDefault();
+            docrecord.records.Clear();
+            foreach (ListObject lo in document.records)
             {
                 docrecord.records.Add(lo);
             }
@@ -144,5 +147,22 @@ namespace ConsoleTestWorker
         public double Price { get; set; }
         public char NotFullMP { get; set; }
         public char Description { get; set; }
+    }
+
+    // dates object for document
+    public class Dates
+    {
+        public string id;
+        public DateTime lastUpdate { get; set; }
+        public DateTime updatedTo { get; set; }
+        // cast document to object
+        public static explicit operator Dates(Document doc)
+        {
+            Dates rec = new Dates();
+            rec.id = doc.GetPropertyValue<string>("id");
+            rec.lastUpdate = doc.GetPropertyValue<DateTime>("lastUpdate");
+            rec.updatedTo = doc.GetPropertyValue<DateTime>("updatedTo");
+            return rec;
+        }
     }
 }
